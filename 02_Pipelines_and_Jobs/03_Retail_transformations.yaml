@@ -1,0 +1,14 @@
+resources:
+  pipelines:
+    pipeline_retail_transformations:
+      name: Retail_transformations
+      libraries:
+        - glob:
+            include: /Workspace/Users/dbksemail/Retail_transformations/bronze_to_silver_transformation/**
+        - glob:
+            include: /Workspace/Users/dbksemail/Retail_transformations/silver_to_gold_transformations/fact_sales.py
+      schema: retail_silver
+      photon: true
+      catalog: retail
+      serverless: true
+      root_path: /Workspace/Users/dbksemail/Retail_transformations

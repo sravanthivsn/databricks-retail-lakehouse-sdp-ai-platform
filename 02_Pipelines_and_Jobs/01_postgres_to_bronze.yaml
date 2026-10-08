@@ -1,0 +1,33 @@
+resources:
+  pipelines:
+    pipeline_postgres_retail_to_bronze:
+      name: postgres_retail_to_bronze
+      ingestion_definition:
+        connection_name: neondb_postgres_sv
+        objects:
+          - table:
+              source_catalog: neondb
+              source_schema: public
+              source_table: inventory
+              destination_catalog: retail
+              destination_schema: postgres_bronze
+              table_configuration:
+                query_based_connector_config:
+                  cursor_columns:
+                    - last_stock_update
+          - table:
+              source_catalog: neondb
+              source_schema: public
+              source_table: product_catalog
+              destination_catalog: retail
+              destination_schema: postgres_bronze
+              table_configuration:
+                scd_type: SCD_TYPE_2
+                query_based_connector_config:
+                  cursor_columns:
+                    - updated_at
+        source_type: POSTGRESQL
+      schema: postgres_bronze
+      channel: PREVIEW
+      catalog: retail
+      serverless: true

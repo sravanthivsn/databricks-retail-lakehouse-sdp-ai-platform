@@ -1,0 +1,22 @@
+resources:
+  pipelines:
+    pipeline_salesforce_data_to_bronze:
+      name: salesforce_data_to_bronze
+      ingestion_definition:
+        connection_name: salesforce_retail_to_bronze
+        objects:
+          - table:
+              source_schema: objects
+              source_table: Account
+              destination_catalog: retail
+              destination_schema: salesforce_bronze
+              table_configuration:
+                scd_type: SCD_TYPE_2
+          - table:
+              source_schema: objects
+              source_table: Opportunity
+              destination_catalog: retail
+              destination_schema: salesforce_bronze
+        source_type: SALESFORCE
+      schema: salesforce_bronze
+      catalog: retail

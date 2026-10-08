@@ -1,0 +1,33 @@
+resources:
+  jobs:
+    RetailData_E2E_Job:
+      name: RetailData_E2E_Job
+      tasks:
+        - task_key: postgres_to_bronze
+          pipeline_task:
+            pipeline_id: 197b69f9-3229-42ab-b15a-d3666447ed0f
+        - task_key: salesforce_to_bronze
+          depends_on:
+            - task_key: postgres_to_bronze
+          pipeline_task:
+            pipeline_id: 9fb07348-3f8c-4876-a90c-c8183da713cd
+        - task_key: blob_to_bronze
+          depends_on:
+            - task_key: salesforce_to_bronze
+          notebook_task:
+            notebook_path: /Workspace/Users/dbksemail/retail_pjct_sv/Databricks/01_blob_source_to_bronze
+            source: WORKSPACE
+        - task_key: Silver_and_Gold_Transformations
+          depends_on:
+            - task_key: blob_to_bronze
+          pipeline_task:
+            pipeline_id: 9330187b-5279-4bf5-899b-811439397162
+        - task_key: Refreshing_Dashboard
+          depends_on:
+            - task_key: Silver_and_Gold_Transformations
+          dashboard_task:
+            subscription: {}
+            dashboard_id: 01f1c30b6c4912b3839fac326f5b2cc1
+      queue:
+        enabled: true
+      performance_target: PERFORMANCE_OPTIMIZED
